@@ -27,6 +27,8 @@ jobs:
 
     - name: Build project
       run: npm run build
+      env:
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
     - name: Determine analysis type
       id: analysis-type
