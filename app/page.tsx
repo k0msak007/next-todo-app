@@ -199,7 +199,7 @@ export default function TodoListPage() {
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent mb-3">
-            ✨ Todo Manager
+            ✨ Todo Manager ✨
           </h1>
           <p className="text-muted-foreground text-lg">Organize your tasks efficiently and beautifully</p>
         </div>
