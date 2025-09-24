@@ -35,7 +35,7 @@ jobs:
       run: |
         # ตรวจสอบว่าเป็น commit แรกหรือไม่
         if git log --oneline -1 --skip=1 > /dev/null 2>&1; then
-          echo "type=incremental" >> $GITHUB_OUTPUT
+          echo "type=full" >> $GITHUB_OUTPUT
           echo "::notice::Incremental analysis (changed files only)"
         else
           echo "type=full" >> $GITHUB_OUTPUT
