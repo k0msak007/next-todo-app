@@ -35,7 +35,7 @@ jobs:
       run: |
         # ตรวจสอบว่าเป็น commit แรกหรือไม่
         if git log --oneline -1 --skip=1 > /dev/null 2>&1; then
-          echo "type=full" >> $GITHUB_OUTPUT
+          echo "type=incremental" >> $GITHUB_OUTPUT
           echo "::notice::Incremental analysis (changed files only)"
         else
           echo "type=full" >> $GITHUB_OUTPUT
@@ -62,7 +62,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       with:
-        args: |
+        args: >
           -Dsonar.projectKey=next-pipeline
           -Dsonar.projectName="next-pipeline - Next.js"
           -Dsonar.exclusions=**/.next/**,**/node_modules/**
