@@ -75,10 +75,8 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       with:
-        args: |
-          -Dsonar.projectKey=next-todo-pipeline
-          -Dsonar.projectName="next-todo-pipeline-Next.js"
-          -Dsonar.inclusions=${{ steps.changed-files.outputs.all_changed_files }}
-          -Dsonar.analysis.mode=incremental
-          -Dsonar.scm.provider=git
-          -Dsonar.scm.disabled=false
+        args: >
+          -Dsonar.projectKey=next-pipeline
+          -Dsonar.projectName="next-pipeline - Next.js"
+          -Dsonar.exclusions=**/.next/**,**/node_modules/**
+          -Dsonar.inclusions=**/*.ts,**/*.tsx
