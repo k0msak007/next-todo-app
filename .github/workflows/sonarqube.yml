@@ -1,4 +1,4 @@
-name: SonarQube Analysis
+name: Node deploy
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ dev, main ]
 
 jobs:
-  sonarqube:
+  node-deploy:
     runs-on: ubuntu-latest
     
     steps:
@@ -30,56 +30,56 @@ jobs:
       env:
         MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
-    - name: Determine analysis type
-      id: analysis-type
-      run: |
-        # ตรวจสอบว่าเป็น commit แรกหรือไม่
-        if git log --oneline -1 --skip=1 > /dev/null 2>&1; then
-          echo "type=incremental" >> $GITHUB_OUTPUT
-          echo "::notice::Incremental analysis (changed files only)"
-        else
-          echo "type=full" >> $GITHUB_OUTPUT
-          echo "::notice::Full project analysis (first run)"
-        fi
+    # - name: Determine analysis type
+    #   id: analysis-type
+    #   run: |
+    #     # ตรวจสอบว่าเป็น commit แรกหรือไม่
+    #     if git log --oneline -1 --skip=1 > /dev/null 2>&1; then
+    #       echo "type=incremental" >> $GITHUB_OUTPUT
+    #       echo "::notice::Incremental analysis (changed files only)"
+    #     else
+    #       echo "type=full" >> $GITHUB_OUTPUT
+    #       echo "::notice::Full project analysis (first run)"
+    #     fi
 
-    - name: Get changed files for incremental analysis
-      if: steps.analysis-type.outputs.type == 'incremental'
-      id: changed-files
-      uses: tj-actions/changed-files@v41
-      with:
-        since_last_remote_commit: 'true'
-        files: |
-          **/*.ts
-          **/*.tsx
-          **/*.js
-          **/*.jsx
-          **/*.json
+    # - name: Get changed files for incremental analysis
+    #   if: steps.analysis-type.outputs.type == 'incremental'
+    #   id: changed-files
+    #   uses: tj-actions/changed-files@v41
+    #   with:
+    #     since_last_remote_commit: 'true'
+    #     files: |
+    #       **/*.ts
+    #       **/*.tsx
+    #       **/*.js
+    #       **/*.jsx
+    #       **/*.json
 
-    - name: SonarQube Full Analysis (First Run)
-      if: steps.analysis-type.outputs.type == 'full'
-      uses: SonarSource/sonarqube-scan-action@v4
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      with:
-        args: >
-          -Dsonar.projectKey=next-pipeline
-          -Dsonar.projectName="next-pipeline - Next.js"
-          -Dsonar.exclusions=**/.next/**,**/node_modules/**
-          -Dsonar.inclusions=**/*.ts,**/*.tsx
+    # - name: SonarQube Full Analysis (First Run)
+    #   if: steps.analysis-type.outputs.type == 'full'
+    #   uses: SonarSource/sonarqube-scan-action@v4
+    #   env:
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    #   with:
+    #     args: >
+    #       -Dsonar.projectKey=next-pipeline
+    #       -Dsonar.projectName="next-pipeline - Next.js"
+    #       -Dsonar.exclusions=**/.next/**,**/node_modules/**
+    #       -Dsonar.inclusions=**/*.ts,**/*.tsx
 
-    - name: SonarQube Incremental Analysis (Subsequent Runs)
-      if: steps.analysis-type.outputs.type == 'incremental'
-      uses: SonarSource/sonarqube-scan-action@v4
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      with:
-        args: >
-          -Dsonar.projectKey=next-pipeline
-          -Dsonar.projectName="next-pipeline - Next.js"
-          -Dsonar.exclusions=**/.next/**,**/node_modules/**
-          -Dsonar.inclusions=**/*.ts,**/*.tsx
+    # - name: SonarQube Incremental Analysis (Subsequent Runs)
+    #   if: steps.analysis-type.outputs.type == 'incremental'
+    #   uses: SonarSource/sonarqube-scan-action@v4
+    #   env:
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    #   with:
+    #     args: >
+    #       -Dsonar.projectKey=next-pipeline
+    #       -Dsonar.projectName="next-pipeline - Next.js"
+    #       -Dsonar.exclusions=**/.next/**,**/node_modules/**
+    #       -Dsonar.inclusions=**/*.ts,**/*.tsx
 
   # robot-tests:
   #   needs: sonarqube
